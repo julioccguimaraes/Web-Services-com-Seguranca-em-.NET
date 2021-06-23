@@ -29,5 +29,7 @@ namespace TrabalhoDM106.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<TrabalhoDM106.Models.Product> Products { get; set; }
     }
 }

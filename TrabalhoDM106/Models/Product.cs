@@ -34,5 +34,7 @@ namespace TrabalhoDM106.Models
         public float comprimento { get; set; }
 
         public float diametro { get; set; }
+
+        public string url { get; set; }
     }
 }
