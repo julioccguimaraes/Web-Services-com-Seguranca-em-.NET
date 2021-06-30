@@ -31,5 +31,7 @@ namespace TrabalhoDM106.Models
         }
 
         public System.Data.Entity.DbSet<TrabalhoDM106.Models.Product> Products { get; set; }
+
+        public System.Data.Entity.DbSet<TrabalhoDM106.Models.Order> Orders { get; set; }
     }
 }
