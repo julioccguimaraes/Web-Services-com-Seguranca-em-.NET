@@ -12,14 +12,19 @@ using TrabalhoDM106.Models;
 
 namespace TrabalhoDM106.Controllers
 {
+    [Authorize]
+    [RoutePrefix("api/orders")]
     public class OrdersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Orders
-        public IQueryable<Order> GetOrders()
+        //public IQueryable<Order> GetOrders()
+        [Authorize(Roles = "ADMIN")]
+        public List<Order> GetOrders()
         {
-            return db.Orders;
+            //return db.Orders;
+            return db.Orders.Include(order => order.OrderProduct).ToList();
         }
 
         // GET: api/Orders/5
@@ -27,12 +32,33 @@ namespace TrabalhoDM106.Controllers
         public IHttpActionResult GetOrder(int id)
         {
             Order order = db.Orders.Find(id);
+
             if (order == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            if (User.IsInRole("ADMIN") || User.Identity.Name == order.Email)
+            {
+                return Ok(order);
+            }
+
+            return Unauthorized();
+        }
+
+        // GET: api/Orders/byemail?email=teste@teste.com
+        [HttpGet]
+        [Route("byemail")]
+        public IHttpActionResult GetOrdersByEmail(string email)
+        {
+            if (User.IsInRole("ADMIN") || User.Identity.Name == email)
+            {
+                var orders = db.Orders.Where(o => o.Email == email).ToList();
+
+                return Ok<List<Order>>(orders);
+            }
+
+            return Unauthorized();
         }
 
         // PUT: api/Orders/5
