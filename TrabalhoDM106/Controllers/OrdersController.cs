@@ -38,27 +38,27 @@ namespace TrabalhoDM106.Controllers
                 return NotFound();
             }
 
-            if (User.IsInRole("ADMIN") || User.Identity.Name == order.Email)
+            if (!User.IsInRole("ADMIN") && User.Identity.Name != order.Email)
             {
-                return Ok(order);
+                return Unauthorized();
             }
 
-            return Unauthorized();
+            return Ok(order);
         }
 
-        // GET: api/Orders/byemail?email=teste@teste.com
+        // GET: api/Orders/ByEmail?email=teste@teste.com
         [HttpGet]
         [Route("byemail")]
         public IHttpActionResult GetOrdersByEmail(string email)
         {
-            if (User.IsInRole("ADMIN") || User.Identity.Name == email)
+            if (!User.IsInRole("ADMIN") && User.Identity.Name != email)
             {
-                var orders = db.Orders.Where(o => o.Email == email).ToList();
-
-                return Ok<List<Order>>(orders);
+                return Unauthorized();
             }
 
-            return Unauthorized();
+            var orders = db.Orders.Where(o => o.Email == email).ToList();
+
+            return Ok<List<Order>>(orders);
         }
 
         // PUT: api/Orders/5
@@ -73,6 +73,11 @@ namespace TrabalhoDM106.Controllers
             if (id != order.Id)
             {
                 return BadRequest();
+            }
+
+            if (!User.IsInRole("ADMIN") && User.Identity.Name != order.Email)
+            {
+                return Unauthorized();
             }
 
             db.Entry(order).State = EntityState.Modified;
@@ -91,6 +96,40 @@ namespace TrabalhoDM106.Controllers
                 {
                     throw;
                 }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // GET: api/Orders/Close?id=5
+        [HttpGet]
+        [Route("close")]
+        public IHttpActionResult CloseOrder(int id)
+        {
+            Order order = db.Orders.Find(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (!User.IsInRole("ADMIN") && User.Identity.Name != order.Email)
+            {
+                return Unauthorized();
+            }
+
+            if (order.Frete == 0) {
+                return BadRequest("Calcule o frete antes de fechar o pedido!");
+            }
+
+            order.Status = "fechado";
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -119,6 +158,11 @@ namespace TrabalhoDM106.Controllers
             if (order == null)
             {
                 return NotFound();
+            }
+
+            if (!User.IsInRole("ADMIN") && User.Identity.Name != order.Email)
+            {
+                return Unauthorized();
             }
 
             db.Orders.Remove(order);
