@@ -231,12 +231,12 @@ namespace TrabalhoDM106.Controllers
             // Para formato 1 (caixa e pacote), não precisamos colocar o diâmtro do produto, deixando o valor 0
             cResultado resultado = correios.CalcPrecoPrazo("", "", "04014", "04713001", customer.Zip, pesoTotal.ToString(), 1, (decimal)lados, (decimal)lados, (decimal)lados, 0, "N", totalProdutos, "N");
 
-            if (resultado.Servicos[0].Erro.Equals("0"))
+            if (!resultado.Servicos[0].Erro.Equals("0"))
             {
                 return BadRequest("Código do erro: " + resultado.Servicos[0].Erro + " - " + resultado.Servicos[0].MsgErro);
             }
 
-            decimal valorFrete = Convert.ToDecimal(resultado.Servicos[0].Valor);
+            decimal valorFrete = Convert.ToDecimal(resultado.Servicos[0].Valor.Replace(",", "."));
 
             order.Peso = pesoTotal;
             order.Frete = valorFrete;

@@ -1606,16 +1606,16 @@
   </wsdl:binding>
   <wsdl:service name="CalcPrecoPrazoWS">
     <wsdl:port name="CalcPrecoPrazoWSSoap" binding="tns:CalcPrecoPrazoWSSoap">
-      <soap:address location="http://ws.correios.com.br:8083/calculador/CalcPrecoPrazo.asmx" />
+      <soap:address location="http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx" />
     </wsdl:port>
     <wsdl:port name="CalcPrecoPrazoWSSoap12" binding="tns:CalcPrecoPrazoWSSoap12">
-      <soap12:address location="http://ws.correios.com.br:8083/calculador/CalcPrecoPrazo.asmx" />
+      <soap12:address location="http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx" />
     </wsdl:port>
     <wsdl:port name="CalcPrecoPrazoWSHttpGet" binding="tns:CalcPrecoPrazoWSHttpGet">
-      <http:address location="http://ws.correios.com.br:8083/calculador/CalcPrecoPrazo.asmx" />
+      <http:address location="http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx" />
     </wsdl:port>
     <wsdl:port name="CalcPrecoPrazoWSHttpPost" binding="tns:CalcPrecoPrazoWSHttpPost">
-      <http:address location="http://ws.correios.com.br:8083/calculador/CalcPrecoPrazo.asmx" />
+      <http:address location="http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

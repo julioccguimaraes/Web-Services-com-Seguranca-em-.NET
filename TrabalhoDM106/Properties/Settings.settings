@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="TrabalhoDM106_br_com_correios_ws_CalcPrecoPrazoWS" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://ws.correios.com.br:8083/calculador/CalcPrecoPrazo.asmx</Value>
+      <Value Profile="(Default)">http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

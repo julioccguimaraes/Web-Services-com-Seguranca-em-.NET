@@ -26,7 +26,7 @@ namespace TrabalhoDM106.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://ws.correios.com.br:8083/calculador/CalcPrecoPrazo.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx")]
         public string TrabalhoDM106_br_com_correios_ws_CalcPrecoPrazoWS {
             get {
                 return ((string)(this["TrabalhoDM106_br_com_correios_ws_CalcPrecoPrazoWS"]));
