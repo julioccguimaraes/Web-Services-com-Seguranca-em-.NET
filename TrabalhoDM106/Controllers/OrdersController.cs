@@ -64,6 +64,7 @@ namespace TrabalhoDM106.Controllers
         }
 
         // PUT: api/Orders/5
+        [Authorize(Roles = "ADMIN")]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutOrder(int id, Order order)
         {
@@ -192,7 +193,7 @@ namespace TrabalhoDM106.Controllers
 
             if(order.Status != "novo")
             {
-                return BadRequest("O pedido de ID " + id + " não é novo pois seu status atual é: " + order.Status);
+                return BadRequest("O pedido de ID " + id + " não está disponível para cálculo de frete pois seu status atual é: " + order.Status);
             }
 
             if (order.OrderProduct.Count == 0)
@@ -206,11 +207,11 @@ namespace TrabalhoDM106.Controllers
 
             if (customer == null)
             {
-                return BadRequest("Falha ao consultar o CEP do cliente para cálculo do frete.");
+                return BadRequest("Falha ao consultar o CEP do cliente para cálculo do frete. Cliente não encontrado no CRM.");
             }
 
             // calculando a cubagem, o peso total e o valor total dos produtos
-            float cubagem = 0;
+            double cubagem = 0;
             float pesoTotal = 0;
             decimal totalProdutos = 0;
 
@@ -222,13 +223,13 @@ namespace TrabalhoDM106.Controllers
             }
 
             // de posse da cubagem, obtemos as dimensões do volume calculando a raiz cúbica da cubagem.
-            decimal lados = (decimal)Math.Pow(cubagem, 1/3);
+            double lados = Math.Pow(cubagem, 1.0 / 3.0);
 
             CalcPrecoPrazoWS correios = new CalcPrecoPrazoWS();
 
             // 04014 é Sedex, 04510 é Pac
-            // Para formato 1, não precisamos colocar o diâmtro do produto, deixando o valor 0
-            cResultado resultado = correios.CalcPrecoPrazo("", "", "04014", "37500007", customer.Zip, pesoTotal.ToString(), 1, lados, lados, lados, 0, "N", totalProdutos, "N");
+            // Para formato 1 (caixa e pacote), não precisamos colocar o diâmtro do produto, deixando o valor 0
+            cResultado resultado = correios.CalcPrecoPrazo("", "", "04014", "04713001", customer.Zip, pesoTotal.ToString(), 1, (decimal)lados, (decimal)lados, (decimal)lados, 0, "N", totalProdutos, "N");
 
             if (resultado.Servicos[0].Erro.Equals("0"))
             {
