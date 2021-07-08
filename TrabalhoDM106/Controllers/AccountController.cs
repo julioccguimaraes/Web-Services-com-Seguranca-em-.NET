@@ -154,6 +154,7 @@ namespace TrabalhoDM106.Controllers
         }
 
         // POST api/Account/AddExternalLogin
+        [Authorize(Roles = "ADMIN")]
         [Route("AddExternalLogin")]
         public async Task<IHttpActionResult> AddExternalLogin(AddExternalLoginBindingModel model)
         {
@@ -192,6 +193,7 @@ namespace TrabalhoDM106.Controllers
         }
 
         // POST api/Account/RemoveLogin
+        [Authorize(Roles = "ADMIN")]
         [Route("RemoveLogin")]
         public async Task<IHttpActionResult> RemoveLogin(RemoveLoginBindingModel model)
         {
@@ -319,7 +321,8 @@ namespace TrabalhoDM106.Controllers
         }
 
         // POST api/Account/Register
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize(Roles = "ADMIN")]
         [Route("Register")]
         public async Task<IHttpActionResult> Register(RegisterBindingModel model)
         {
@@ -336,11 +339,22 @@ namespace TrabalhoDM106.Controllers
             {
                 return GetErrorResult(result);
             }
+            // usuários registrados recebem o papel de USER
+            else
+            {
+                var addToRoleResult = await UserManager.AddToRoleAsync(user.Id, "USER");
+
+                if (!addToRoleResult.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+            }
 
             return Ok();
         }
 
         // POST api/Account/RegisterExternal
+        [Authorize(Roles = "ADMIN")]
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("RegisterExternal")]
