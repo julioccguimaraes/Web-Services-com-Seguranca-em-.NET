@@ -33,12 +33,19 @@ namespace TrabalhoDM106.CRMClient
         public Customer GetCustomerByEmail(string email)
         {
             // Get a customer by ID
-            HttpResponseMessage response = client.GetAsync("customers/byemail?email=" + email).Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                // Parse the response body. Blocking!
-                Customer customer = (Customer)response.Content.ReadAsAsync<Customer>().Result;
-                return customer;
+                HttpResponseMessage response = client.GetAsync("customers/byemail?email=" + email).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    // Parse the response body. Blocking!
+                    Customer customer = (Customer)response.Content.ReadAsAsync<Customer>().Result;
+                    return customer;
+                }
+            } catch (AggregateException e)
+            {
+                Console.WriteLine("GetCustomerByEmail: " + e.Message);
+                return null;
             }
             return null;
         }

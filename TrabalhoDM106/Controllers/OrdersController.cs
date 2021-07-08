@@ -209,7 +209,7 @@ namespace TrabalhoDM106.Controllers
 
             if (customer == null)
             {
-                return BadRequest("Falha ao consultar o CEP do cliente para cálculo do frete. Cliente não encontrado no CRM.");
+                return BadRequest("Falha ao consultar o CEP do cliente para cálculo do frete. Cliente não encontrado ou CRM fora do ar.");
             }
 
             // calculando a cubagem, o peso total e o valor total dos produtos
@@ -231,21 +231,27 @@ namespace TrabalhoDM106.Controllers
 
             // 04014 é Sedex, 04510 é Pac
             // Para formato 1 (caixa e pacote), não precisamos colocar o diâmtro do produto, deixando o valor 0
-            cResultado resultado = correios.CalcPrecoPrazo("", "", "04014", "04713001", customer.Zip, pesoTotal.ToString(), 1, (decimal)lados, (decimal)lados, (decimal)lados, 0, "N", totalProdutos, "N");
-
-            if (!resultado.Servicos[0].Erro.Equals("0"))
+            try
             {
-                return BadRequest("Código do erro: " + resultado.Servicos[0].Erro + " - " + resultado.Servicos[0].MsgErro);
+                cResultado resultado = correios.CalcPrecoPrazo("", "", "04014", "04713001", customer.Zip, pesoTotal.ToString(), 1, (decimal)lados, (decimal)lados, (decimal)lados, 0, "N", totalProdutos, "N");
+
+                if (!resultado.Servicos[0].Erro.Equals("0"))
+                {
+                    return BadRequest("Código do erro: " + resultado.Servicos[0].Erro + " - " + resultado.Servicos[0].MsgErro);
+                }
+
+                decimal valorFrete = Convert.ToDecimal(resultado.Servicos[0].Valor.Replace(",", "."));
+
+                order.Peso = pesoTotal;
+                order.Frete = valorFrete;
+                order.Total = totalProdutos + valorFrete;
+                order.DataEntrega = DateTime.Today.AddDays(Convert.ToDouble(resultado.Servicos[0].PrazoEntrega));
+
+                db.SaveChanges();
+            } catch(WebException e)
+            {
+                return BadRequest("WebService dos Correios está fora do ar. " + e.Message);
             }
-
-            decimal valorFrete = Convert.ToDecimal(resultado.Servicos[0].Valor.Replace(",", "."));
-
-            order.Peso = pesoTotal;
-            order.Frete = valorFrete;
-            order.Total = totalProdutos + valorFrete;
-            order.DataEntrega = DateTime.Today.AddDays(Convert.ToDouble(resultado.Servicos[0].PrazoEntrega));
-
-            db.SaveChanges();
 
             return Ok(order);
         }
