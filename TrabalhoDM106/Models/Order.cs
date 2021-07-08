@@ -19,7 +19,7 @@ namespace TrabalhoDM106.Models
 
         public DateTime Data { get; set; }
 
-        public DateTime DataEntrega { get; set; }
+        public DateTime? DataEntrega { get; set; }
 
         public string Status { get; set; }
 

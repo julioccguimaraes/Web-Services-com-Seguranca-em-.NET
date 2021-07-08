@@ -233,6 +233,10 @@
     <Compile Include="Migrations\202106301251132_AddOrderAndOrderProduct.Designer.cs">
       <DependentUpon>202106301251132_AddOrderAndOrderProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107081433118_OrderSetNullDataEntrega.cs" />
+    <Compile Include="Migrations\202107081433118_OrderSetNullDataEntrega.Designer.cs">
+      <DependentUpon>202107081433118_OrderSetNullDataEntrega.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -381,6 +385,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106301251132_AddOrderAndOrderProduct.resx">
       <DependentUpon>202106301251132_AddOrderAndOrderProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107081433118_OrderSetNullDataEntrega.resx">
+      <DependentUpon>202107081433118_OrderSetNullDataEntrega.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
