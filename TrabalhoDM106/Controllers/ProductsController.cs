@@ -54,11 +54,8 @@ namespace TrabalhoDM106.Controllers
             // verifica se há outro produto com o mesmo código.
 
             // Importante usar AsNoTracking() segundo stackoverflow:
-            // "I believe you might have invoked Select before the update, By default,
-            // DBContext will cache the record when they are fethced (Selected),
-            // use "AsNoTracking()" in your select call while fetching record."
-            // fonte: stackoverflow.com/questions/41376161/attaching-an-entity-of-type-x-failed-because-another-entity-of-the-same-type-a
-            Product productByCode = db.Products.AsNoTracking().First(p => p.codigo == product.codigo);
+            // stackoverflow.com/questions/41376161/attaching-an-entity-of-type-x-failed-because-another-entity-of-the-same-type-a
+            Product productByCode = db.Products.AsNoTracking().Where(p => p.codigo == product.codigo).FirstOrDefault();
 
             if (productByCode != null && productByCode.Id != product.Id)
             {
@@ -66,7 +63,7 @@ namespace TrabalhoDM106.Controllers
             }
 
             // verifica se há outro produto com o mesmo modelo
-            Product productByModel = db.Products.AsNoTracking().First(p => p.modelo == product.modelo);
+            Product productByModel = db.Products.AsNoTracking().Where(p => p.modelo == product.modelo).FirstOrDefault();
 
             if (productByModel != null && productByModel.Id != product.Id) {
                 return BadRequest("Já existe outro produto com o mesmo modelo " + productByModel.modelo);
@@ -101,6 +98,22 @@ namespace TrabalhoDM106.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            // verifica se há outro produto com o mesmo código.
+            Product productByCode = db.Products.AsNoTracking().Where(p => p.codigo == product.codigo).FirstOrDefault();
+
+            if (productByCode != null)
+            {
+                return BadRequest("Já existe outro produto com o mesmo código " + productByCode.codigo);
+            }
+
+            // verifica se há outro produto com o mesmo modelo
+            Product productByModel = db.Products.AsNoTracking().Where(p => p.modelo == product.modelo).FirstOrDefault();
+
+            if (productByModel != null)
+            {
+                return BadRequest("Já existe outro produto com o mesmo modelo " + productByModel.modelo);
             }
 
             db.Products.Add(product);
