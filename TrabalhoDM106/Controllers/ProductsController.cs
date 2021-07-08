@@ -48,7 +48,28 @@ namespace TrabalhoDM106.Controllers
 
             if (id != product.Id)
             {
-                return BadRequest();
+                return BadRequest("A idendificação do produto difere do que deseja alterar.");
+            }
+
+            // verifica se há outro produto com o mesmo código.
+
+            // Importante usar AsNoTracking() segundo stackoverflow:
+            // "I believe you might have invoked Select before the update, By default,
+            // DBContext will cache the record when they are fethced (Selected),
+            // use "AsNoTracking()" in your select call while fetching record."
+            // fonte: stackoverflow.com/questions/41376161/attaching-an-entity-of-type-x-failed-because-another-entity-of-the-same-type-a
+            Product productByCode = db.Products.AsNoTracking().First(p => p.codigo == product.codigo);
+
+            if (productByCode != null && productByCode.Id != product.Id)
+            {
+                return BadRequest("Já existe outro produto com o mesmo código " + productByCode.codigo);
+            }
+
+            // verifica se há outro produto com o mesmo modelo
+            Product productByModel = db.Products.AsNoTracking().First(p => p.modelo == product.modelo);
+
+            if (productByModel != null && productByModel.Id != product.Id) {
+                return BadRequest("Já existe outro produto com o mesmo modelo " + productByModel.modelo);
             }
 
             db.Entry(product).State = EntityState.Modified;
