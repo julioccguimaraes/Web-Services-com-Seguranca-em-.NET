@@ -146,6 +146,8 @@ namespace TrabalhoDM106.Controllers
             {
                 return BadRequest(ModelState);
             }
+            // pedido com data de agora
+            order.Data = DateTime.Now;
 
             db.Orders.Add(order);
             db.SaveChanges();
